@@ -4,8 +4,29 @@ import { AuthContext } from "../providers/AuthProvider";
 import { signInWithGoogle } from "../service/firebase";
 import * as Api from "../service/api";
 import { TodoList } from "./TodoList";
+import { TextField, Button, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles(() => ({
+  root: {
+    textAlign: "center",
+    marginTop: "50px",
+  },
+  form: {
+    width: "100%",
+    maxWidth: 360,
+    margin: "auto",
+    marginBottom: 40,
+    display: "flex",
+    alignItems: "baseline",
+    justifyContent: "center",
+  },
+  input: {
+    marginRight: 10,
+  },
+}));
 
 const Dashboard = () => {
+  const classes = useStyles();
   const [inputName, setInputName] = useState("");
   const currentUser = useContext(AuthContext);
   const [todos, setTodos] = useState([]);
@@ -23,8 +44,9 @@ const Dashboard = () => {
     let dom;
     if (dig(currentUser, "currentUser", "uid")) {
       dom = (
-        <form>
-          <input
+        <form className={classes.form}>
+          <TextField
+          className={classes.input}
             type="text"
             placeholder="todo name"
             value={inputName}
@@ -32,15 +54,22 @@ const Dashboard = () => {
             onKeyPress={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                if(inputName.length > 0){
-                post();
+                if (inputName.trim().length > 0) {
+                  post();
                 }
               }
             }}
           />
-          <button type="button" onClick={() => post()}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            disabled={inputName.trim().length > 0 ? false : true}
+            type="button"
+            onClick={() => post()}
+          >
             add
-          </button>
+          </Button>
         </form>
       );
     } else {
@@ -54,7 +83,7 @@ const Dashboard = () => {
     fetch();
   };
   return (
-    <div>
+    <div className={classes.root}>
       {formRender()}
       <TodoList todos={todos} fetch={fetch} />
     </div>
