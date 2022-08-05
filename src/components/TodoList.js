@@ -29,9 +29,12 @@ export const TodoList = (props) => {
   const classes = useStyles();
   const deleteHandler = async (id) => {
     await Api.todoDelete(id);
-    setTimeout(() => {
       props.fetch();
-    }, 100);
+  };
+
+  const checkHandle = async (id) => {
+    await Api.toggleComplete(id);
+    props.fetch();
   };
   const todoList = props.todos.map((todo) => {
     return (
@@ -43,7 +46,12 @@ export const TodoList = (props) => {
       // </li>
       <ListItem key={todo.id} className={classes.list}>
         <ListItemIcon>
-          <Checkbox checked={todo.isComplete} />
+          <Checkbox
+            checked={todo.isComplete}
+            onChange={() => {
+              checkHandle(todo.id);
+            }}
+          />
         </ListItemIcon>
         <ListItemText primary={todo.content} />
         <ListItemSecondaryAction>

@@ -28,8 +28,20 @@ export const initGet = async (uid) => {
   });
 };
 
-export const todoDelete = (id) => {
-  db.collection("todo")
+export const todoDelete = async (id) => {
+  await db
+    .collection("todo")
     .doc(id)
     .delete();
+};
+
+export const toggleComplete = async (id) => {
+  const todo = await db
+    .collection("todo")
+    .doc(id)
+    .get();
+  return db
+    .collection("todo")
+    .doc(id)
+    .update({ isComplete: !todo.data().isComplete });
 };
